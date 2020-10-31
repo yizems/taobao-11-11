@@ -24,7 +24,7 @@ float = 1.25;
 patNum = 0;
 swipeTips = "滑啊滑啊滑啊滑ヽ(￣▽￣)ﾉ";
 taskChooseList = ["淘宝赚喵币", "淘宝拍猫猫", "支付宝赚喵币", "京东全民营业", "调节脚本速度"];
-speedChooseList = [0.75, 1, 1.25, 1.5, 1.75, 2, 3];
+speedChooseList = [0.5, 0.75, 1, 1.25, 1.5, 1.75, 2, 3];
 taobaoActivityData = "taobao://pages.tmall.com/wow/z/hdwk/act-20201111/index";
 activityActivityData = "alipays://platformapi/startapp?appId=68687502";
 width = device.width;
@@ -188,13 +188,8 @@ function runTaobao(appName, activityData, taskList) {
                     }
                     toast(swipeTips);
                     randomSwipe();
-                    randomSleep(5000 * speed);
-                    toast(swipeTips);
-                    randomSwipe();
-                    randomSleep(6000 * speed);
-                    toast(swipeTips);
-                    randomSwipe();
-                    descContains("任务完成").findOne(8000 * speed);
+               
+                    descContains("任务完成").findOne(15000 * speed);
                     randomSleep(1000 * speed);
                     i++;
                     log("已完成");
@@ -215,21 +210,15 @@ function runTaobao(appName, activityData, taskList) {
                         clickButton(button);
                         randomSleep(300 * speed);
                     }
-                    randomSleep(3500 * speed);
+                    randomSleep(2500 * speed);
                     if (textContains("观看").exists() && textContains("关注").exists()) {
                         //进入直播页面直接等待，不滑屏
                         randomSleep(18000 * speed);
                     } else {
                         toast(swipeTips);
                         randomSwipe();
-                        randomSleep(3500 * speed);
-                        toast(swipeTips);
-                        randomSwipe();
-                        randomSleep(5500 * speed);
-                        toast(swipeTips);
-                        randomSwipe();
                     }
-                    textContains("全部完成").findOne(8000 * speed);
+                    textContains("全部完成").findOne(15000 * speed);
                     randomSleep(1000 * speed);
                     i++;
                     log("已完成")
@@ -277,12 +266,12 @@ function runJd(taskList) {
             randomSleep(300 * speed);
         }
         toastLog("若页面有弹窗，请手动关闭");
-        randomSleep(5000 * speed);
+        randomSleep(5000 * speed + 1000);
     }
     text("领金币").waitFor();
     clickContent("领金币");
     log("展开任务列表");
-    randomSleep(1000 * speed);
+    randomSleep(1500 * speed);
     //未打开任务列表则再次尝试点击
     while (!textContains("去完成").exists() && !textContains("已完成").exists()) {
         clickContent("领金币");
@@ -348,17 +337,19 @@ function runJd(taskList) {
                     if (textContains("宠汪汪").exists() || textContains("京喜财富岛").exists() || textContains("天天加速").exists()) {
                         randomSleep(10000 * speed);
                     } else {
-                        randomSleep(2500 * speed);
-                        toast(swipeTips);
-                        randomSwipe();
-                        randomSleep(2200 * speed);
-                        toast(swipeTips);
-                        randomSwipe();
-                        randomSleep(3500 * speed);
-                        toast(swipeTips);
-                        randomSwipe();
+                        // randomSleep(1000 * speed);
+                        // toast(swipeTips);
+                        // // randomSleep(6000)
+                        // randomSwipe();
+                        // randomSleep(2200 * speed);
+                        // toast(swipeTips);
+                        // randomSwipe();
+                        // randomSleep(3500 * speed);
+                        // toast(swipeTips);
+                        // randomSwipe();
                     }
-                    descContains("获得").findOne(8000 * speed);
+                    // descContains("获得").findOne(8000 * speed);
+                    waitFor("立即返回");
                     randomSleep(500 * speed);
                     i++;
                     if (textContains("京友圈").exists()) {
@@ -367,7 +358,7 @@ function runJd(taskList) {
                     }
                     log("已完成");
                     back();
-                    randomSleep(4000 * speed);
+                    randomSleep(2000 * speed);
                     break;
                 default:
                     log("跳过")
@@ -478,7 +469,7 @@ function clickContent(content, type, sleepTime) {
  */
 function clickButton(button) {
     var bounds = button.bounds();
-    press(random(bounds.left, bounds.right), random(bounds.top, bounds.bottom), random(50, 100));
+    press(random(bounds.left, bounds.right), random(bounds.top + (bounds.bottom - bounds.top) / 4 * 3, bounds.bottom), random(50, 100));
 }
 
 /**
@@ -554,8 +545,7 @@ function smlMove(qx, qy, zx, zy, time) {
     };
     for (var i = 0; i < 4; i++) {
         eval("point.push(dx" + i + ")");
-    }
-    ;
+    };
     for (let i = 0; i < 1; i += 0.08) {
         xxyy = [parseInt(bezierCurves(point, i).x), parseInt(bezierCurves(point, i).y)];
         xxy.push(xxyy);
