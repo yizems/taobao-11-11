@@ -280,6 +280,7 @@ function runJd(taskList) {
     taskList.forEach(task => {
         while (textContains(task).exists()) {
             var button = text(task).findOnce(j);
+            log(j+"");
             if (button == null) {
                 break;
             }
@@ -312,6 +313,7 @@ function runJd(taskList) {
                         }
                         if (k >= 5) {
                             log("跳过该任务");
+                            j++;
                             break;
                         }
                     }
@@ -348,8 +350,8 @@ function runJd(taskList) {
                         // toast(swipeTips);
                         // randomSwipe();
                     }
-                    // descContains("获得").findOne(8000 * speed);
-                    waitFor("立即返回");
+                    descContains("获得").findOne(8000);
+                    // waitFor("立即返回");
                     randomSleep(500 * speed);
                     i++;
                     if (textContains("京友圈").exists()) {
