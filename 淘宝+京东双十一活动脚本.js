@@ -31,7 +31,7 @@ width = device.width;
 height = device.height;
 setScreenMetrics(width, height);
 
-alert("【淘宝+京东双十一活动脚本 " + versions + "】", "脚本执行过程请勿手动点击按钮，否则脚本执行可能会错乱，导致任务失败\n\n执行淘宝任务时请确保使用低版本淘宝（V9.5及以下），否则无法获取奖励\n\n最新版脚本请到GitHub获取\nGitHub: https://github.com/hyue418\n\nPowered By Hyue418");
+// alert("【淘宝+京东双十一活动脚本 " + versions + "】", "脚本执行过程请勿手动点击按钮，否则脚本执行可能会错乱，导致任务失败\n\n执行淘宝任务时请确保使用低版本淘宝（V9.5及以下），否则无法获取奖励\n\n最新版脚本请到GitHub获取\nGitHub: https://github.com/hyue418\n\nPowered By Hyue418");
 // 选择任务
 taskChoose();
 
@@ -39,6 +39,7 @@ taskChoose();
  * 任务选择
  */
 function taskChoose() {
+
     var options = dialogs.multiChoice("需要执行的任务", taskChooseList);
     if (options == '') {
         toastLog("脚本已退出");
@@ -188,7 +189,7 @@ function runTaobao(appName, activityData, taskList) {
                     }
                     toast(swipeTips);
                     randomSwipe();
-               
+
                     descContains("任务完成").findOne(15000 * speed);
                     randomSleep(1000 * speed);
                     i++;
@@ -266,10 +267,10 @@ function runJd(taskList) {
             randomSleep(300 * speed);
         }
         toastLog("若页面有弹窗，请手动关闭");
-        randomSleep(5000 * speed + 1000);
+        randomSleep(3000 * speed + 1000);
     }
-    text("领金币").waitFor();
-    clickContent("领金币");
+    className("android.view.View").text("领金币").waitFor()
+    className("android.view.View").text("领金币").findOne().click()
     log("展开任务列表");
     randomSleep(1500 * speed);
     //未打开任务列表则再次尝试点击
@@ -277,10 +278,11 @@ function runJd(taskList) {
         clickContent("领金币");
         randomSleep(300 * speed);
     }
+    j = 2;
     taskList.forEach(task => {
         while (textContains(task).exists()) {
             var button = text(task).findOnce(j);
-            log(j+"");
+            log(j + "");
             if (button == null) {
                 break;
             }
@@ -293,6 +295,16 @@ function runJd(taskList) {
                     randomSleep(1000 * speed);
                     break;
                 case '去完成':
+
+                    let index = button.indexInParent();
+                    let children = button.parent().children();
+                    let title = children.get(index - 2).text();
+                    log(title);
+                    if (title.indexOf("小程序") >= 0) {
+                        j++;
+                        break;
+                    }
+
                     var k = 0;
                     jdClickButton(button);
                     randomSleep(1000 * speed);
@@ -302,6 +314,10 @@ function runJd(taskList) {
                         i++;
                         clickContent("取消");
                         randomSleep(1000 * speed);
+                        break;
+                    } else if (className("android.view.View").text("品牌会员").exists()) {
+                        j++;
+                        back();
                         break;
                     } else {
                         randomSleep(1000 * speed);
