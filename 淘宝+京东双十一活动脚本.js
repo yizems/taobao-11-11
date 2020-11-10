@@ -19,7 +19,7 @@ try {
 
 //初始化参数
 versions = 'V2.3.1';
-speed = 1;
+speed = 0.75;
 float = 1.25;
 patNum = 0;
 swipeTips = "滑啊滑啊滑啊滑ヽ(￣▽￣)ﾉ";
@@ -300,7 +300,11 @@ function runJd(taskList) {
                     let children = button.parent().children();
                     let title = children.get(index - 2).text();
                     log(title);
-                    if (title.indexOf("小程序") >= 0) {
+                    if (title.indexOf("小程序") >= 0 ||
+                        title.indexOf("商圈") >= 0 ||
+                        title.indexOf("联合会员") >= 0
+                    ) {
+                        log("跳过任务");
                         j++;
                         break;
                     }
@@ -309,45 +313,26 @@ function runJd(taskList) {
                     jdClickButton(button);
                     randomSleep(1500 * speed);
 
-                    if(className("android.view.View").text("我知道了").exists()){
+                    if (className("android.view.View").text("我知道了").exists()) {
                         text("我知道了").findOnce().click()
                     }
 
-                    if (className("android.view.View").textContains("取消").exists()) {
-                        log("跳过助力任务");
-                        j++;
-                        i++;
-                        clickContent("取消");
-                        randomSleep(1000 * speed);
-                        break;
-                    } else if (className("android.view.View").text("品牌会员").exists()) {
-                        j++;
-                        log("跳过任务:联合开卡");
-                        back();
-                        break;
-                    } else {
-                        randomSleep(1000 * speed);
-                        //若未点击成功，则再点击五次，仍未成功则跳过
-                        while (textContains(task).exists() && k < 5) {
-                            jdClickButton(button);
-                            randomSleep(300 * speed);
-                            k++;
-                        }
-                        if (k >= 5) {
-                            log("跳过该任务");
-                            j++;
-                            break;
-                        }
+                    randomSleep(1000 * speed);
+                    //若未点击成功，则再点击五次，仍未成功则跳过
+                    while (textContains(task).exists() && k < 5) {
+                        jdClickButton(button);
+                        randomSleep(300 * speed);
+                        k++;
                     }
-                    randomSleep(2000 * speed);
-                    if (textContains("联合开卡").exists() || textContains("商圈红包").exists()) {
-                        log("跳过任务::联合开卡");
+                    if (k >= 5) {
+                        log("跳过该任务");
                         j++;
-                        i++;
-                        back();
-                        randomSleep(500 * speed);
                         break;
-                    } else if (textContains("任意浏览").exists()) {
+                    }
+
+                    randomSleep(2000 * speed);
+                    
+                    if (textContains("任意浏览").exists()) {
                         jdBrowsingOrShopping("浏览");
                         back();
                         randomSleep(500 * speed);
