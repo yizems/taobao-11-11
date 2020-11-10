@@ -307,7 +307,12 @@ function runJd(taskList) {
 
                     var k = 0;
                     jdClickButton(button);
-                    randomSleep(1000 * speed);
+                    randomSleep(1500 * speed);
+
+                    if(className("android.view.View").text("我知道了").exists()){
+                        text("我知道了").findOnce().click()
+                    }
+
                     if (className("android.view.View").textContains("取消").exists()) {
                         log("跳过助力任务");
                         j++;
@@ -317,6 +322,7 @@ function runJd(taskList) {
                         break;
                     } else if (className("android.view.View").text("品牌会员").exists()) {
                         j++;
+                        log("跳过任务:联合开卡");
                         back();
                         break;
                     } else {
@@ -335,7 +341,7 @@ function runJd(taskList) {
                     }
                     randomSleep(2000 * speed);
                     if (textContains("联合开卡").exists() || textContains("商圈红包").exists()) {
-                        log("跳过任务");
+                        log("跳过任务::联合开卡");
                         j++;
                         i++;
                         back();
