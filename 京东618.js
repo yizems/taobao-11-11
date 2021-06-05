@@ -36,7 +36,10 @@ setScreenMetrics(width, height);
 // 选择任务
 
 
-var taskList = ['签到', '去完成'];
+// var taskList = ['签到', '去完成'];
+var taskList = ['去完成'];
+
+var backCompat = true;
 
 runJd();
 
@@ -80,6 +83,7 @@ function runJd() {
                 break;
             }
             log("开始做第" + (i + 1) + "次任务");
+            backCompat = true;
             switch (task) {
                 case '签到':
                     jdClickButton(button);
@@ -92,10 +96,13 @@ function runJd() {
                     let index = button.indexInParent();
                     let children = button.parent().children();
                     let title = children.get(index - 2).text();
+                    let info = children.get(index - 1).text();
                     log(title);
+                    log(info);
                     if (title.indexOf("小程序") >= 0 ||
                         title.indexOf("商圈") >= 0 ||
                         title.indexOf("品牌会员") >= 0 ||
+                        title.indexOf("加购") >= 0 ||
                         title.indexOf("怪兽") >= 0
                     ) {
                         log("跳过任务");
@@ -124,14 +131,26 @@ function runJd() {
                         break;
                     }
 
+                    if(info.indexOf('得500金币')>-1){
+                        back();
+                        i++;
+                        randomSleep(2000 * speed);
+                        continue;
+                    }
+
                     randomSleep(2000 * speed);
+
+                    if (title.indexOf("领红包") >= 0) {
+                        randomSleep(3000 * speed);
+                    }
+
 
                     if (textContains("任意浏览").exists()) {
                         jdBrowsingOrShopping("浏览");
                         back();
                         randomSleep(500 * speed);
                         break;
-                    } else if (textContains("任意加购").exists()) {
+                    } else if (textContains("加购").exists()) {
                         jdBrowsingOrShopping("加购");
                         back();
                         randomSleep(500 * speed);
@@ -167,6 +186,13 @@ function runJd() {
             }
         }
     });
+
+    if (backCompat) {
+        backCompat = false;
+        runJd();
+        return
+    }
+
     toastLog("【京东】任务已完成");
     log("=========================");
 }
