@@ -39,7 +39,6 @@ setScreenMetrics(width, height);
 // var taskList = ['签到', '去完成'];
 var taskList = ['去完成'];
 
-var backCompat = true;
 
 runJd();
 
@@ -77,6 +76,9 @@ function runJd() {
     j = 1;
     taskList.forEach(task => {
         while (textContains(task).exists()) {
+
+            randomSleep(5000);
+
             var button = text(task).findOnce(j);
             log(j + "");
             if (button == null) {
@@ -92,7 +94,6 @@ function runJd() {
                     randomSleep(1000 * speed);
                     break;
                 case '去完成':
-
                     let index = button.indexInParent();
                     let children = button.parent().children();
                     let title = children.get(index - 2).text();
@@ -131,7 +132,7 @@ function runJd() {
                         break;
                     }
 
-                    if(info.indexOf('得500金币')>-1){
+                    if (info.indexOf('得500金币') > -1) {
                         back();
                         i++;
                         randomSleep(2000 * speed);
@@ -142,19 +143,6 @@ function runJd() {
 
                     if (title.indexOf("领红包") >= 0) {
                         randomSleep(3000 * speed);
-                    }
-
-
-                    if (textContains("任意浏览").exists()) {
-                        jdBrowsingOrShopping("浏览");
-                        back();
-                        randomSleep(500 * speed);
-                        break;
-                    } else if (textContains("加购").exists()) {
-                        jdBrowsingOrShopping("加购");
-                        back();
-                        randomSleep(500 * speed);
-                        break;
                     }
 
                     if (title.indexOf('互动精选好物') >= 0) {
@@ -168,7 +156,7 @@ function runJd() {
                     if (textContains("宠汪汪").exists() || textContains("京喜财富岛").exists() || textContains("天天加速").exists()) {
                         randomSleep(10000 * speed);
                     }
-                    descContains("获得").findOne(8000);
+                    descContains("获得").findOne(10000);
                     // waitFor("立即返回");
                     randomSleep(500 * speed);
                     i++;
@@ -187,62 +175,11 @@ function runJd() {
         }
     });
 
-    if (backCompat) {
-        backCompat = false;
-        runJd();
-        return
-    }
-
     toastLog("【京东】任务已完成");
     log("=========================");
 }
 
-/**
- * 京东浏览/加购任务
- * @param taskName 任务名：浏览/加购
- */
-function jdBrowsingOrShopping(taskName) {
-    log("进入【" + taskName + "】任务");
-    toastLog("日志窗口已隐藏");
-    console.hide();
-    randomSleep(200 * speed);
-    for (i = 0; i < 6; i++) {
-        if (i == 4) {
-            toastLog(swipeTips);
-            randomSwipe();
-            randomSleep(500 * speed);
-        }
-        var price = textContains("¥").findOnce(i);
-        var goods = price.parent().parent();
-        var suffix = i == 5 ? "(容错)" : '';
-        log(taskName + "第" + (i + 1) + "个商品" + suffix);
-        if (taskName == "浏览") {
-            jdClickButton(goods);
-            randomSleep(1000 * speed);
-            //若未点击成功，则再次点击
-            while (textContains("任意浏览").exists()) {
-                jdClickButton(goods);
-                randomSleep(300 * speed);
-            }
-            randomSleep(3000 * speed);
-            //商品页可能会有缺货弹窗，点掉
-            if (textContains("取消").exists()) {
-                clickContent("取消");
-                randomSleep(500 * speed);
-            }
-            toastLog(swipeTips);
-            randomSwipe();
-            randomSleep(1000 * speed);
-            back();
-            randomSleep(1500 * speed);
-        } else if (taskName == "加购") {
-            var shopping = goods.child(goods.child(0).text() == "已加购" ? 5 : 4);
-            click(shopping.bounds().centerX(), shopping.bounds().centerY());
-            randomSleep(2500 * speed);
-        }
-    }
-    console.show();
-}
+
 
 /**
  * 通过文字内容模拟点击按钮
